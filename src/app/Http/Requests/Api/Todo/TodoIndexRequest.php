@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Api;
+namespace App\Http\Requests\Api\Todo;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Api\ApiBaseRequest;
 
-class TodoStoreRequest extends ApiBaseRequest
+class TodoIndexRequest extends ApiBaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +25,7 @@ class TodoStoreRequest extends ApiBaseRequest
     public function rules()
     {
         return [
-            'user_id' => ['required',  'integer'],
-            'task_title' => ['required', 'max:255'],
+            'user_id' => ['required', 'integer']
         ];
     }
 }

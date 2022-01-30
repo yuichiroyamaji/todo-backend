@@ -3,7 +3,7 @@
 namespace App\UseCases\Api\Todo;
 
 use App\Services\UserService;
-use App\Services\TodoService;
+use App\Services\TaskService;
 use App\Utilities\ApiResponseUtility;
 use App\Utilities\LogMessageUtility;
 use Illuminate\Support\Facades\DB;
@@ -19,13 +19,13 @@ class TodoStoreAction
 {
     public function __construct(
         UserService $userService, 
-        TodoService $todoService, 
+        TaskService $taskService, 
         ApiResponseUtility $apiResponseUtility,
         LogMessageUtility $logMessageUtility
     )
     {
         $this->userService = $userService;
-        $this->todoService = $todoService;
+        $this->taskService = $taskService;
         $this->apiResponseUtility = $apiResponseUtility;
         $this->logMessageUtility = $logMessageUtility;
     }
@@ -48,8 +48,8 @@ class TodoStoreAction
                 $err = ['The user id ['.$userId.'] does not exist', 422];
             }else{
                 $tasks = DB::transaction(function () use ($userId, $taskTitle, $taskContent) {
-                    $this->todoService->storeTodoTask($userId, $taskTitle, $taskContent);
-                    return $this->todoService->getTodoTasksById($userId)->toArray();
+                    $this->taskService->storeTask($userId, $taskTitle, $taskContent);
+                    return $this->taskService->getTasksById($userId)->toArray();
                 });
             }
         }catch(\Exception $e){

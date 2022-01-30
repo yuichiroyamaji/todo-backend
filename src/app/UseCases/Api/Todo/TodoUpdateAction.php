@@ -3,7 +3,7 @@
 namespace App\UseCases\Api\Todo;
 
 use App\Services\UserService;
-use App\Services\TodoService;
+use App\Services\TaskService;
 use App\Utilities\ApiResponseUtility;
 use App\Utilities\LogMessageUtility;
 use Illuminate\Support\Facades\DB;
@@ -19,13 +19,13 @@ class TodoUpdateAction
 {
     public function __construct(
         UserService $userService,
-        TodoService $todoService,
+        TaskService $taskService,
         ApiResponseUtility $apiResponseUtility,
         LogMessageUtility $logMessageUtility
     )
     {
         $this->userService = $userService;
-        $this->todoService = $todoService;
+        $this->taskService = $taskService;
         $this->apiResponseUtility = $apiResponseUtility;
         $this->logMessageUtility = $logMessageUtility;
     }
@@ -41,10 +41,10 @@ class TodoUpdateAction
     {
         // タスクステータスが含まれている場合はステータスの更新
         if(isset($request->task_status)){
-            return $this->updateTodoTaskStatus($request, $taskId);
+            return $this->updateTaskStatus($request, $taskId);
         // 含まれていない場合はタスクタイトル/タスク内容の更新
         }else{
-            return $this->updateTodoTaskTitleContent($request, $taskId);
+            return $this->updateTaskTitleContent($request, $taskId);
         }
     }
 
@@ -55,21 +55,21 @@ class TodoUpdateAction
      * @param integer $taskId
      * @return json $response
      */
-    private function updateTodoTaskStatus($request, $taskId){
+    private function updateTaskStatus($request, $taskId){
         $userId = $request->user_id;
         $taskStatus = $request->task_status;
         $err = false;
         try{
-            // タスクの存在チェック
-            if (!$this->todoService->isTask($taskId)) {
-                $err = ['The task id ['.$taskId.'] does not exist', 422];
             // ユーザーの存在チェック
-            }elseif (!$this->userService->isUser($userId)) {
+            if (!$this->userService->isUser($userId)) {
                 $err = ['The user id ['.$userId.'] does not exist', 422];
+            // タスクの存在チェック
+            }elseif (!$this->taskService->isTask($taskId, $userId)) {
+                $err = ['The task id ['.$taskId.'] does not exist', 422];
             }else{
                 $tasks = DB::transaction(function () use ($taskId, $taskStatus, $userId) {
-                    $this->todoService->updateTodoTaskStatus($taskId, $taskStatus);
-                    return $this->todoService->getTodoTasksById($userId)->toArray();
+                    $this->taskService->updateTaskStatus($taskId, $taskStatus);
+                    return $this->taskService->getTasksById($userId)->toArray();
                 });
             }
         }catch(\Exception $e){
@@ -95,22 +95,22 @@ class TodoUpdateAction
      * @param integer $taskId
      * @return json $response
      */
-    private function updateTodoTaskTitleContent($request, $taskId){
+    private function updateTaskTitleContent($request, $taskId){
         $userId = $request->user_id;
         $taskTitle = $request->task_title;
         $taskContent = $request->task_content;
         $err = false;
         try{
-            // タスクの存在チェック
-            if (!$this->todoService->isTask($taskId)) {
-                $err = ['The task id ['.$taskId.'] does not exist', 422];
             // ユーザーの存在チェック
-            }elseif (!$this->userService->isUser($userId)) {
+            if (!$this->userService->isUser($userId)) {
                 $err = ['The user id ['.$userId.'] does not exist', 422];
+            // タスクの存在チェック
+            }elseif (!$this->taskService->isTask($taskId, $userId)) {
+                $err = ['The task id ['.$taskId.'] does not exist', 422];
             }else{
                 $tasks = DB::transaction(function () use ($taskId, $taskTitle, $taskContent, $userId) {
-                    $this->todoService->updateTodoTaskTitleContent($taskId, $taskTitle, $taskContent);
-                    return $this->todoService->getTodoTasksById($userId)->toArray();
+                    $this->taskService->updateTaskTitleContent($taskId, $taskTitle, $taskContent);
+                    return $this->taskService->getTasksById($userId)->toArray();
                 });
             }
         }catch(\Exception $e){

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Task;
+use App\Enums\UserRole;
 
 /**
  * タスク情報を管理するServiceクラスです。
@@ -11,14 +12,14 @@ use App\Models\Task;
  * @author Yuichiro.Yamaji <yuichiroyamaji@hotmail.com>
  * @package Service
  */
-class TodoService
+class TaskService
 {
     /**
      * user_idに紐付くタスクを取得
      * @param integer $userId
      * @return Tasks[]
      */
-    public function getTodoTasksById($userId)
+    public function getTasksById($userId)
     {
         return Task::select('id', 'task_status', 'task_title', 'task_content')
                     ->where('in_charge_user_id', $userId)
@@ -32,7 +33,7 @@ class TodoService
      * @param string $taskContent
      * @return void()
      */
-    public function storeTodoTask($userId, $taskTitle, $taskContent)
+    public function storeTask($userId, $taskTitle, $taskContent)
     {
         Task::create([
                 'in_charge_user_id' => $userId,
@@ -46,9 +47,12 @@ class TodoService
      * @param string $taskId
      * @return boolean
      */
-    public function isTask($taskId)
+    public function isTask($taskId, $userId)
     {
-        $tasks = Task::where('id', $taskId)->first();
+        $tasks = Task::where([
+                    'id' => $taskId, 
+                    'in_charge_user_id' => $userId
+                ])->first();
         return $tasks ? true : false;
     }
 
@@ -59,7 +63,7 @@ class TodoService
      * @param string $taskContent
      * @return void()
      */
-    public function updateTodoTaskTitleContent($taskId, $taskTitle, $taskContent)
+    public function updateTaskTitleContent($taskId, $taskTitle, $taskContent)
     {
         Task::where('id', $taskId)
                 ->update([
@@ -74,7 +78,7 @@ class TodoService
      * @param string $taskStaus
      * @return void()
      */
-    public function updateTodoTaskStatus($taskId, $taskStatus)
+    public function updateTaskStatus($taskId, $taskStatus)
     {
         Task::where('id', $taskId)
                 ->update([
@@ -87,9 +91,39 @@ class TodoService
      * @param integer $taskId
      * @return void()
      */
-    public function deleteTodoTask($taskId)
+    public function deleteTask($taskId)
     {
         Task::where('id', $taskId)->delete();
+    }
+
+    /**
+     * タスク管理対応のユーザーの最初のタスクのIDを取得
+     * 
+     * @return validTaskId
+     */
+    public function getValidTaskId($userId)
+    {
+        $result = Task::select('id')
+                    ->where('in_charge_user_id', '=', $userId)
+                    ->first();
+        $toArray = $result->toArray();
+        $validTaskId = $toArray['id'];
+        return $validTaskId;
+    }
+
+    /**
+     * タスク管理対応外のユーザーの最初のタスクのIDを取得
+     * 
+     * @return invalidTaskId
+     */
+    public function getInvalidTaskId($userId)
+    {
+        $result = Task::select('id')
+                    ->where('in_charge_user_id', '<>', $userId)
+                    ->first();
+        $toArray = $result->toArray();
+        $invalidTaskId = $toArray['id'];
+        return $invalidTaskId;
     }
 
 }

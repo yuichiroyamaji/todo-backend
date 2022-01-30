@@ -1,10 +1,15 @@
-## <u>TodoDemoアプリ(バックエンド)</u>
+## TodoDemoアプリ(バックエンド)
+<br>
 
 ### 概要図
-
+---
+<br>
 <img src="https://databucketyamaji.s3.us-east-2.amazonaws.com/images/backend.png">
 
+<br>
+
 ### 基本構成
+---
 
 |NO|項目|環境|ソフトウェア|
 |--|--|--|--|
@@ -14,8 +19,10 @@
 |4|フレームワーク|AWS ECS Fargate|Laravel 6.2|
 |5|データベース|AWS RDS|MySQL 8.0|
 
-### 利用AWSサービス
+<br>
 
+### 利用AWSサービス
+---
 - ECS
 - ECR
 - ELB (ALB)
@@ -25,7 +32,10 @@
 - CloudWatch
 - Route 53
 
+<br>
+
 ### リポジトリ
+---
 
 |項目|値|
 |--|--|
@@ -34,7 +44,10 @@
 |リポジトリURL|https://github.com/yuichiroyamaji/todo-backend.git|
 |ブランチ|main, develop|
 
+<br>
+
 ### ディレクトリ構成
+---
 
 ```
 [プロジェクトルート]
@@ -50,7 +63,10 @@
   └ README.md
 ```
 
+<br>
+
 ### ビルド/デプロイ
+---
 
 |利用サービス|内訳|動作|
 |--|--|--|
@@ -58,7 +74,24 @@
 ||CodeBuild|Docker imageをビルドし、ECRへプッシュ|
 ||CodeDeploy|タスクを更新、ECSへ反映|
 
+<br>
+
+### ローカル環境構築
+---
+
+{ROOTDIR} = 本ファイルがあるローカルディレクトリ
+
+```
+cd {ROOTDIR}
+docker build -t todo .
+docker run -d --privileged --name todo -p 8080:80 -v {ROOTDIR}/src:/var/www/html todo
+```
+{LOCAL_DOMAIN} = http://localhost:8080
+
+<br>
+
 ### 実装API
+---
 
 ##### ▼API一覧
 
@@ -105,9 +138,12 @@
 }
 ```
 
-### 設計
+<br>
 
-##### ▼コンポーネント設計
+### 設計
+---
+
+#### ▼コンポーネント設計
 
 <img src="https://databucketyamaji.s3.us-east-2.amazonaws.com/images/cleanarchitecture.jpeg" width="60%">
 
@@ -121,11 +157,33 @@
 ||Services|Modelに紐づくビジネスロジック|
 ||Utilities|Modelに紐づかない共通ビジネスロジック|
 
-##### ▼データフロー
-
+#### ▼データフロー
+```
 Routing → RequestForm -> Controller → UseCase -> Service/Utility → UseCase → Controller → response()
+```
 
-(例) Todoタスク新規登録
+<br>
+
+### テスト
+---
+
+#### ▼実行クラス
+|NO|名目|テストクラス名|テストケース件数|
+|--|--|--|--|
+|1|ユーザー情報の取得| UserIndexTest|3件|
+|2|TODOタスク情報の取得| TodoIndexTest|13件|
+|3|TODOタスクの作成| TodoStoreTest|19件|
+|4|TODOタスクの更新| TodoUpdateTest|32件|
+|5|TODOタスクの削除| TodoDestoryTest|20件|
+|||合計|87件|
+
+#### ▼実行コマンド
+```
+./vendor/bin/phpunit
+```
+
+
+<!-- (例) Todoタスク新規登録
 
 1. Routing
     (route\api.php)
@@ -133,7 +191,7 @@ Routing → RequestForm -> Controller → UseCase -> Service/Utility → UseCase
     Route::group(['namespace' => 'Api','middleware' => ['auth.basic', 'cors', 'logs']], function() {
 
         // Userルート
-        Route::get('/users', 'UserController@index');
+        Route::get('/users', 'UserController@index')->name('user.index');
 
         // Todoタスクルート
         Route::apiResource('/todo', 'ToDoController')
@@ -178,8 +236,8 @@ Routing → RequestForm -> Controller → UseCase -> Service/Utility → UseCase
                 $err = ['The user id ['.$userId.'] does not exist', 422];
             }else{
                 $tasks = DB::transaction(function () use ($userId, $taskTitle, $taskContent) {
-                    $this->todoService->storeTodoTask($userId, $taskTitle, $taskContent);
-                    return $this->todoService->getTodoTasksById($userId)->toArray();
+                    $this->todoService->storeTask($userId, $taskTitle, $taskContent);
+                    return $this->todoService->getTasksById($userId)->toArray();
                 });
             }
         }catch(\Exception $e){
@@ -205,15 +263,15 @@ Routing → RequestForm -> Controller → UseCase -> Service/Utility → UseCase
     {
         $user = User::where('id', $userId)
                     ->where('deleted_at', null)
-                    ->whereIn('role', [UserRole::MANAGER, UserRole::MEMBER])
+                    ->whereIn('role', UserRole::getTaskManagedRoles())
                     ->first();
         return $user ? true : false;
     }
     ```
 
-   (App\Services\TodoService.php)
+   (App\Services\TaskService.php)
     ```php
-    public function storeTodoTask($userId, $taskTitle, $taskContent)
+    public function storeTask($userId, $taskTitle, $taskContent)
     {
         Task::create([
                 'in_charge_user_id' => $userId,
@@ -234,4 +292,4 @@ Routing → RequestForm -> Controller → UseCase -> Service/Utility → UseCase
         ];
         $statusCd < 300 ? Log::info($logContents) : Log::error($logContents);
     }
-    ```
+    ``` -->

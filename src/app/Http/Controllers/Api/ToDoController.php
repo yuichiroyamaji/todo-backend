@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\Api\TodoIndexRequest;
+use App\Http\Requests\Api\Todo\TodoIndexRequest;
 use App\UseCases\Api\Todo\TodoIndexAction;
-use App\Http\Requests\Api\TodoStoreRequest;
+use App\Http\Requests\Api\Todo\TodoStoreRequest;
 use App\UseCases\Api\Todo\TodoStoreAction;
-use App\Http\Requests\Api\TodoUpdateRequest;
+use App\Http\Requests\Api\Todo\TodoUpdateRequest;
 use App\UseCases\Api\Todo\TodoUpdateAction;
-use App\Http\Requests\Api\TodoDeleteRequest;
-use App\UseCases\Api\Todo\TodoDeleteAction;
+use App\Http\Requests\Api\Todo\TodoDestroyRequest;
+use App\UseCases\Api\Todo\TodoDestroyAction;
 
 class ToDoController extends Controller
 {
@@ -58,12 +58,12 @@ class ToDoController extends Controller
     /**
      * Remove the specified resource from storage.
      * 
-     * @param  TodoDeleteRequest  $request
-     * @param  TodoDeleteAction  $action
+     * @param  TodoDestroyRequest  $request
+     * @param  TodoDestroyAction  $action
      * @param  int  $taskId
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TodoDeleteRequest $request, $taskId, TodoDeleteAction $action)
+    public function destroy(TodoDestroyRequest $request, $taskId, TodoDestroyAction $action)
     {
         $tasks = $action->invoke($request, $taskId);
         return $tasks;

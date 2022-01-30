@@ -67,4 +67,17 @@ class UserRole
             self::MEMBER => 'メンバー',
         ];
     }
+
+    /**
+     * タスク管理対象のロールを取得します。
+     *
+     * @return array
+     */
+    public static function getTaskManagedRoles()
+    {
+        return [
+            self::MANAGER,
+            self::MEMBER
+        ];
+    }
 }

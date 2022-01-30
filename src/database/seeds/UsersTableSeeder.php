@@ -38,7 +38,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'rachel.green@gmail.com',
             'password' => Hash::make('e2KZ75xTcYZKy5o8'),
             'role' => UserRole::MANAGER,
-            'img_path' => 'https://yuichiroyamaji-todo.s3.ap-northeast-1.amazonaws.com/assets/img/rachel.png',
+            'img_path' => './assets/img/rachel.png',
         ]);
 
         User::create([
@@ -47,7 +47,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'joey.tribbiani@gmail.com',
             'password' => Hash::make('e2KZ75xTcYZKy5o8'),
             'role' => UserRole::MEMBER,
-            'img_path' => 'https://yuichiroyamaji-todo.s3.ap-northeast-1.amazonaws.com/assets/img/joey.png',
+            'img_path' => './assets/img/joey.png',
         ]);
 
         User::create([
@@ -56,7 +56,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'chandler.bing@gmail.com',
             'password' => Hash::make('e2KZ75xTcYZKy5o8'),
             'role' => UserRole::MEMBER,
-            'img_path' => 'https://yuichiroyamaji-todo.s3.ap-northeast-1.amazonaws.com/assets/img/chandler.png',
+            'img_path' => './assets/img/chandler.png',
         ]);
 
         User::create([
@@ -65,7 +65,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'monica.geller@gmail.com',
             'password' => Hash::make('e2KZ75xTcYZKy5o8'),
             'role' => UserRole::MEMBER,
-            'img_path' => 'https://yuichiroyamaji-todo.s3.ap-northeast-1.amazonaws.com/assets/img/monica.png',
+            'img_path' => './assets/img/monica.png',
         ]);
 
         User::create([
@@ -74,7 +74,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'phoebe.buffay@gmail.com',
             'password' => Hash::make('e2KZ75xTcYZKy5o8'),
             'role' => UserRole::MEMBER,
-            'img_path' => 'https://yuichiroyamaji-todo.s3.ap-northeast-1.amazonaws.com/assets/img/phoebe.png',
+            'img_path' => './assets/img/phoebe.png',
         ]);
 
         User::create([
@@ -83,7 +83,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'ross.geller@gmail.com',
             'password' => Hash::make('e2KZ75xTcYZKy5o8'),
             'role' => UserRole::MEMBER,
-            'img_path' => 'https://yuichiroyamaji-todo.s3.ap-northeast-1.amazonaws.com/assets/img/ross.png',
+            'img_path' => './assets/img/ross.png',
         ]);
     }
 }

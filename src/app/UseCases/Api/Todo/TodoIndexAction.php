@@ -3,7 +3,7 @@
 namespace App\UseCases\Api\Todo;
 
 use App\Services\UserService;
-use App\Services\TodoService;
+use App\Services\TaskService;
 use App\Utilities\ApiResponseUtility;
 use App\Utilities\LogMessageUtility;
 
@@ -18,13 +18,13 @@ class TodoIndexAction
 {
     public function __construct(
         UserService $userService, 
-        TodoService $todoService, 
+        TaskService $taskService, 
         ApiResponseUtility $apiResponseUtility,
         LogMessageUtility $logMessageUtility
     )
     {
         $this->userService = $userService;
-        $this->todoService = $todoService;
+        $this->taskService = $taskService;
         $this->apiResponseUtility = $apiResponseUtility;
         $this->logMessageUtility = $logMessageUtility;
     }
@@ -44,7 +44,7 @@ class TodoIndexAction
             if (!$this->userService->isUser($userId)) {
                 $err = ['The user id ['.$userId.'] does not exist', 422];
             }else{
-                $tasks = $this->todoService->getTodoTasksById($userId)->toArray();
+                $tasks = $this->taskService->getTasksById($userId)->toArray();
             }
         }catch(\Exception $e){
             $err = [$e->getMessage(), 500];

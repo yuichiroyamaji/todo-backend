@@ -3,7 +3,7 @@
 namespace App\UseCases\Api\Todo;
 
 use App\Services\UserService;
-use App\Services\TodoService;
+use App\Services\TaskService;
 use App\Utilities\ApiResponseUtility;
 use App\Utilities\LogMessageUtility;
 use Illuminate\Support\Facades\DB;
@@ -15,17 +15,17 @@ use Illuminate\Support\Facades\DB;
  * @author Yuichiro.Yamaji <yuichiroyamaji@hotmail.com>
  * @package UseCase
  */
-class TodoDeleteAction
+class TodoDestroyAction
 {
     public function __construct(
         UserService $userService,
-        TodoService $todoService,
+        TaskService $taskService,
         ApiResponseUtility $apiResponseUtility,
         LogMessageUtility $logMessageUtility
     )
     {
         $this->userService = $userService;
-        $this->todoService = $todoService;
+        $this->taskService = $taskService;
         $this->apiResponseUtility = $apiResponseUtility;
         $this->logMessageUtility = $logMessageUtility;
     }
@@ -42,16 +42,16 @@ class TodoDeleteAction
         $userId = $request->user_id;
         $err = false;
         try{
-            // タスクの存在チェック
-            if (!$this->todoService->isTask($taskId)) {
-                $err = ['The task id ['.$taskId.'] does not exist', 422];
             // ユーザーの存在チェック
-            }elseif (!$this->userService->isUser($userId)) {
+            if (!$this->userService->isUser($userId)) {
                 $err = ['The user id ['.$userId.'] does not exist', 422];
+            // タスクの存在チェック
+            }elseif (!$this->taskService->isTask($taskId, $userId)) {
+                $err = ['The task id ['.$taskId.'] does not exist', 422];
             }else{
                 $tasks = DB::transaction(function () use ($taskId, $userId) {
-                    $this->todoService->deleteTodoTask($taskId);
-                    return $this->todoService->getTodoTasksById($userId)->toArray();
+                    $this->taskService->deleteTask($taskId);
+                    return $this->taskService->getTasksById($userId)->toArray();
                 });
             }
         }catch(\Exception $e){

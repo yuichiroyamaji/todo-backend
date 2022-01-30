@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['namespace' => 'Api','middleware' => ['auth.basic', 'cors', 'logs']], function() {
 
     // Userルート
-    Route::get('/users', 'UserController@index');
+    Route::get('/users', 'UserController@index')->name('user.index');
 
     // Todoタスクルート
     Route::apiResource('/todo', 'ToDoController')

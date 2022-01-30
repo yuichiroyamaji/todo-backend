@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Api;
+namespace App\Http\Requests\Api\Todo;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Route;
+use App\Http\Requests\Api\ApiBaseRequest;
 
-class TodoUpdateRequest extends ApiBaseRequest
+class TodoDestroyRequest extends ApiBaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,8 +28,6 @@ class TodoUpdateRequest extends ApiBaseRequest
         return [
             'task_id' => ['required', 'integer'],
             'user_id' => ['required', 'integer'],
-            'task_status' => ['integer'],
-            'task_title' => ['required_without:task_status', 'max:255'],
         ];
     }
 

@@ -42,6 +42,9 @@ RUN composer install && \
 # generate key
 RUN php artisan key:generate
 
+# execute phpunit
+RUN ./vendor/bin/phpunit
+
 # composer 2 update
 RUN composer self-update --2
 
