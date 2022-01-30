@@ -71,29 +71,17 @@
 |利用サービス|内訳|動作|
 |--|--|--|
 |AWS CodePipeline|CodeCommit|リポジトリ<b>【deveop】</b>ブランチへのプッシュで起動|
-||CodeBuild|Docker imageをビルドし、ECRへプッシュ|
-||CodeDeploy|タスクを更新、ECSへ反映|
-
-<br>
-
-### ローカル環境構築
----
-
-{ROOTDIR} = 本ファイルがあるローカルディレクトリ
-
-```
-cd {ROOTDIR}
-docker build -t todo .
-docker run -d --privileged --name todo -p 8080:80 -v {ROOTDIR}/src:/var/www/html todo
-```
-{LOCAL_DOMAIN} = http://localhost:8080
+||CodeBuild|自動テスト実行, Docker imageビルド, ECRプッシュ|
+||CodeDeploy|タスク更新, ECS Fargateコンテナ反映|
 
 <br>
 
 ### 実装API
 ---
+<br>
 
-##### ▼API一覧
+#### ▼API一覧
+<br>
 
 {DOMAIN} = https://hereare.myyuichiroyamajitododemo.com/
 
@@ -105,7 +93,20 @@ docker run -d --privileged --name todo -p 8080:80 -v {ROOTDIR}/src:/var/www/html
 |4|TODOタスクの更新|PUT|{DOMAIN}/api/todo/{TASK_ID}|
 |5|TODOタスクの削除|DELETE|{DOMAIN}/api/todo/{TASK_ID}|
 
-##### ▼レスポンス成功例
+<br>
+
+#### ▼認証情報
+<br>
+
+|項目|値|
+|--|--|
+|認証形式|Basic認証|
+|ユーザー名|system.admin@gmail.com|
+|パスワード|e2KZ75xTcYZKy5o8|
+
+<br>
+
+#### ▼レスポンス成功例
 
 ```
 {
@@ -128,7 +129,7 @@ docker run -d --privileged --name todo -p 8080:80 -v {ROOTDIR}/src:/var/www/html
 }
 ```
 
-##### ▼レスポンス失敗例
+#### ▼レスポンス失敗例
 
 ```
 {
@@ -137,6 +138,28 @@ docker run -d --privileged --name todo -p 8080:80 -v {ROOTDIR}/src:/var/www/html
     "errors": "The user id [100] does not exist"
 }
 ```
+
+<br>
+
+### テスト
+---
+
+#### ▼実行クラス
+|NO|名目|テストクラス名|テストケース件数|
+|--|--|--|--|
+|1|ユーザー情報の取得| UserIndexTest|3件|
+|2|TODOタスク情報の取得| TodoIndexTest|13件|
+|3|TODOタスクの作成| TodoStoreTest|19件|
+|4|TODOタスクの更新| TodoUpdateTest|32件|
+|5|TODOタスクの削除| TodoDestoryTest|20件|
+|||合計|87件|
+
+#### ▼実行コマンド
+```
+./vendor/bin/phpunit
+```
+#### ▼実行タイミング
+- CodePipeline（CodeBuild）内にて自動実行
 
 <br>
 
@@ -162,28 +185,8 @@ docker run -d --privileged --name todo -p 8080:80 -v {ROOTDIR}/src:/var/www/html
 Routing → RequestForm -> Controller → UseCase -> Service/Utility → UseCase → Controller → response()
 ```
 
-<br>
 
-### テスト
----
-
-#### ▼実行クラス
-|NO|名目|テストクラス名|テストケース件数|
-|--|--|--|--|
-|1|ユーザー情報の取得| UserIndexTest|3件|
-|2|TODOタスク情報の取得| TodoIndexTest|13件|
-|3|TODOタスクの作成| TodoStoreTest|19件|
-|4|TODOタスクの更新| TodoUpdateTest|32件|
-|5|TODOタスクの削除| TodoDestoryTest|20件|
-|||合計|87件|
-
-#### ▼実行コマンド
-```
-./vendor/bin/phpunit
-```
-
-
-<!-- (例) Todoタスク新規登録
+(例) Todoタスク新規登録
 
 1. Routing
     (route\api.php)
@@ -292,4 +295,4 @@ Routing → RequestForm -> Controller → UseCase -> Service/Utility → UseCase
         ];
         $statusCd < 300 ? Log::info($logContents) : Log::error($logContents);
     }
-    ``` -->
+    ```
