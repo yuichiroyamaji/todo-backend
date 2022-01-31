@@ -39,14 +39,14 @@ RUN composer install && \
   chmod -R 777 storage && \
   chmod -R 777 bootstrap
 
-# execute phpunit
-RUN ./vendor/bin/phpunit
-
 # generate key
 RUN php artisan key:generate
 
+# execute phpunit
+RUN ./vendor/bin/phpunit
+
 # composer 2 update
-# RUN composer self-update --2
+RUN composer self-update --2
 
 # Debugbar
 # RUN composer require barryvdh/laravel-debugbar
