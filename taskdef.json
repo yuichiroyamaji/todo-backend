@@ -9,7 +9,7 @@
         "logDriver": "awslogs",
         "secretOptions": null,
         "options": {
-          "awslogs-group": "/ecs/todo-task-definition",
+          "awslogs-group": "/ecs/todo-20220404-taskdefinition",
           "awslogs-region": "ap-northeast-1",
           "awslogs-stream-prefix": "ecs"
         }
@@ -54,7 +54,7 @@
       "dockerLabels": null,
       "systemControls": null,
       "privileged": null,
-      "name": "app"
+      "name": "todo-20200404-container"
     }
   ],
   "placementConstraints": [],
@@ -65,7 +65,7 @@
     "FARGATE"
   ],
   "taskDefinitionArn": "arn:aws:ecs:ap-northeast-1:361454773891:task-definition/todo-task-definition",
-  "family": "todo-task-definition",
+  "family": "todo-20220404-taskdefinition",
   "requiresAttributes": [
     {
       "targetId": null,
