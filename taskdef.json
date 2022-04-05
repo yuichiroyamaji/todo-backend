@@ -64,7 +64,7 @@
     "EC2",
     "FARGATE"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-1:361454773891:task-definition/todo-task-definition",
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-1:361454773891:task-definition/todo-20220404-taskdefinition:1",
   "family": "todo-20220404-taskdefinition",
   "requiresAttributes": [
     {
