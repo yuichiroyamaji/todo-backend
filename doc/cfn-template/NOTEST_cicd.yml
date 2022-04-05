@@ -1,0 +1,75 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template of CICD Components for TODO Demo App
+
+Parameters:
+  Certificate:
+    Type: String
+  Ec2Instance:
+    Type: String
+  SubnetA:
+    Type: String
+  SubnetB:
+    Type: String
+  Vpc:
+    Type: String
+Resources:
+  TodoListenerHttp:
+    Properties:
+      DefaultActions:
+        - RedirectConfig:
+            Host: '#{host}'
+            Path: /#{path}
+            Port: '443'
+            Protocol: HTTPS
+            Query: '#{query}'
+            StatusCode: HTTP_301
+          Type: redirect
+      LoadBalancerArn: !Ref 'TodoLoadBalancer'
+      Port: 80
+      Protocol: HTTP
+    Type: AWS::ElasticLoadBalancingV2::Listener
+  TodoListenerHttps:
+    Properties:
+      Certificates:
+        - CertificateArn: !Ref 'Certificate'
+      DefaultActions:
+        - TargetGroupArn: !Ref 'TodoTargetGroup'
+          Type: forward
+      LoadBalancerArn: !Ref 'TodoLoadBalancer'
+      Port: 443
+      Protocol: HTTPS
+    Type: AWS::ElasticLoadBalancingV2::Listener
+  TodoLoadBalancer:
+    Properties:
+      Name: todo-alb-https
+      SecurityGroups:
+        - !Ref 'TodoSecurityGroup'
+      Subnets:
+        - !Ref 'SubnetA'
+        - !Ref 'SubnetB'
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+  TodoSecurityGroup:
+    Properties:
+      GroupDescription: todo-security-group
+      SecurityGroupIngress:
+        - CidrIp: '0.0.0.0/0'
+          FromPort: 80
+          IpProtocol: tcp
+          ToPort: 80
+        - CidrIp: '0.0.0.0/0'
+          FromPort: 443
+          IpProtocol: tcp
+          ToPort: 443
+      VpcId: !Ref 'Vpc'
+    Type: AWS::EC2::SecurityGroup
+  TodoTargetGroup:
+    Properties:
+      Name: todo-target-group-https
+      Port: 443
+      Protocol: HTTP
+      Targets:
+        - Id: !Ref 'Ec2Instance'
+          Port: 80
+      VpcId: !Ref 'Vpc'
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup

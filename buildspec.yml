@@ -2,8 +2,8 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-      - REPOSITORY_URI=361454773891.dkr.ecr.ap-northeast-1.amazonaws.com/app
+      - $(aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin 361454773891.dkr.ecr.ap-northeast-1.amazonaws.com)
+      - REPOSITORY_URI=361454773891.dkr.ecr.ap-northeast-1.amazonaws.com/todo-backend
       - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
 
   build:

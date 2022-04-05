@@ -76,6 +76,22 @@
 
 <br>
 
+### ローカル環境構築
+---
+
+{ROOTDIR} = 本ファイルがあるローカルディレクトリ
+
+※ docker/env/localにあるDockerfileをROOTDIRに持ってきて実行
+
+```
+cd {ROOTDIR}
+docker build -t todo .
+docker run -d --privileged --name todo -p 8080:80 -v {ROOTDIR}/src:/var/www/html todo
+```
+{LOCAL_DOMAIN} = http://localhost:8080
+
+<br>
+
 ### 実装API
 ---
 <br>

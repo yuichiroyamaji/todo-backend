@@ -1,0 +1,20 @@
+# ECR push command
+
+[macOS / Linux]
+
+Make sure that you have the latest version of the AWS CLI and Docker installed. For more information, see Amazon ECR の開始方法 .
+次の手順を使用して、リポジトリに対してイメージを認証し、プッシュします。Amazon ECR 認証情報ヘルパーなどの追加のレジストリ認証方法については、レジストリの認証  を参照してください 。
+認証トークンを取得し、レジストリに対して Docker クライアントを認証します。
+Use the AWS CLI:
+
+aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin 361454773891.dkr.ecr.ap-northeast-1.amazonaws.com
+注意: {AWSCLI} の使用中にエラーが発生した場合は、最新バージョンの {AWSCLI} と Docker がインストールされていることを確認してください。
+以下のコマンドを使用して、Docker イメージを構築します。一から Docker ファイルを構築する方法については、「こちらをクリック 」の手順を参照してください。既にイメージが構築されている場合は、このステップをスキップします。
+
+docker build -t todo-backend .
+構築が完了したら、このリポジトリにイメージをプッシュできるように、イメージにタグを付けます。
+
+docker tag todo-backend:latest 361454773891.dkr.ecr.ap-northeast-1.amazonaws.com/todo-backend:latest
+以下のコマンドを実行して、新しく作成した AWS リポジトリにこのイメージをプッシュします:
+
+docker push 361454773891.dkr.ecr.ap-northeast-1.amazonaws.com/todo-backend:latest
