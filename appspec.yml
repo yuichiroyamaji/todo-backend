@@ -5,5 +5,5 @@ Resources:
       Properties:
         TaskDefinition: "<TASK_DEFINITION>"
         LoadBalancerInfo:
-            ContainerName: "todo-backend" 
+            ContainerName: "todo-20200404-container" 
             ContainerPort: 80
