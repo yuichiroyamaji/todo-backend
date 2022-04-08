@@ -36,9 +36,11 @@ RUN apt-get update && \
 
 # laravel
 RUN composer install && \
-  chmod -R 777 storage && \
-  chmod -R 777 bootstrap && \
-  chown -R www-data storage/
+  sudo chmod o+w ./storage/ -R && \
+  sudo chown -R www-data:www-data . 
+#  chmod -R 777 storage && \
+#  chmod -R 777 bootstrap && \
+#  chown -R www-data storage/
 
 # generate key
 RUN php artisan key:generate
