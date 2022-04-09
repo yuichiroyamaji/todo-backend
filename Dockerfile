@@ -43,7 +43,10 @@ RUN composer install && \
 #  chown -R www-data storage/
 
 # generate key
-RUN php artisan key:generate
+RUN php artisan key:generate && \
+  php artisan cache:clear && \
+  php artisan config:clear && \
+  php artisan config:cache
 
 # execute phpunit
 RUN ./vendor/bin/phpunit
