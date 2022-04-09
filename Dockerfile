@@ -46,7 +46,7 @@ RUN php artisan key:generate && \
   php artisan cache:clear && \
   php artisan config:clear && \
   php artisan config:cache && \
-  chmod -R 775 /var/www/html
+  chmod -R 775 /var/www/html && \
   chown -R www-data:www-data /var/www/html
 
 # Debugbar
