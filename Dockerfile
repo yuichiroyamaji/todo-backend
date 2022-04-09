@@ -34,25 +34,20 @@ RUN apt-get update && \
   composer config -g process-timeout 3600 && \
   composer config -g repos.packagist composer https://packagist.org
 
-# laravel
+# composer
 RUN composer install && \
-  chmod 777 ./storage/ -R && \
-  chown -R www-data:www-data ./storage/
-#  chmod -R 777 storage && \
-#  chmod -R 777 bootstrap && \
-#  chown -R www-data storage/
+  composer self-update --2
 
 # execute phpunit
 RUN ./vendor/bin/phpunit
 
-# composer 2 update
-RUN composer self-update --2
-
-# generate key
+# laravel
 RUN php artisan key:generate && \
   php artisan cache:clear && \
   php artisan config:clear && \
-  php artisan config:cache
+  php artisan config:cache && \
+  chmod -R 775 /var/www/html
+  chown -R www-data:www-data /var/www/html
 
 # Debugbar
 # RUN composer require barryvdh/laravel-debugbar
