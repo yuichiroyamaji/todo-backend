@@ -42,17 +42,17 @@ RUN composer install && \
 #  chmod -R 777 bootstrap && \
 #  chown -R www-data storage/
 
-# generate key
-RUN php artisan key:generate && \
-  php artisan cache:clear && \
-  php artisan config:clear && \
-  php artisan config:cache
-
 # execute phpunit
 RUN ./vendor/bin/phpunit
 
 # composer 2 update
 RUN composer self-update --2
+
+# generate key
+RUN php artisan key:generate && \
+  php artisan cache:clear && \
+  php artisan config:clear && \
+  php artisan config:cache
 
 # Debugbar
 # RUN composer require barryvdh/laravel-debugbar
