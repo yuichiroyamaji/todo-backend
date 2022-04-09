@@ -36,8 +36,8 @@ RUN apt-get update && \
 
 # laravel
 RUN composer install && \
-  chmod o+w ./storage/ -R && \
-  chown -R www-data:www-data . 
+  chmod 777 ./storage/ -R && \
+  chown -R www-data:www-data ./storage/
 #  chmod -R 777 storage && \
 #  chmod -R 777 bootstrap && \
 #  chown -R www-data storage/
